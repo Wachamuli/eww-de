@@ -2,6 +2,8 @@
 
 Morpheus is a custom-built desktop environment designed to transform barebones Wayland compositors into a fully functional workstation. Built on top of Hyprland, it bridges the gap between a window manager and a complete Desktop Environment.
 
+![Top bar](./assets/showcase/2024-07-25-223839_hyprshot.png)
+
 ## Key Features
 
 ### Core Desktop Components
@@ -65,24 +67,34 @@ mv eww-de ~/.config/eww
 eww open-many bar notifications_window
 ```
 
-**Pro tip**: Use `eww list-windows` to list all available windows. 
-
+**Pro tip**: Use `eww list-windows` to list all available windows. Also, you can check the eww [documentation](https://elkowar.github.io/eww/) for more information.
+ 
 ## Showcase
-
-![Top bar](./assets/showcase/2024-07-25-223839_hyprshot.png)
 
 ![Calendar](./assets/showcase/2024-07-25-223846_hyprshot.png)
 
-![Wifi password dialog](./assets/showcase/2024-07-26-194436_hyprshot.png)
-
-![Notification pop up](./assets/showcase/2024-07-26-194444_hyprshot.png)
-
-![Notification pop up](./assets/showcase/2024-07-26-194749_hyprshot.png)
+Figure 1. Calendar
 
 ![Control panel](./assets/showcase/2024-07-26-194458_hyprshot.png)
 
-![Control panel - mixer, power mode, and system monitor](./assets/showcase/2024-07-26-194539_hyprshot.png)
+Figure 2. Control Panel
 
 ![Control panel - mixer, power mode, and system monitor](./assets/showcase/2024-07-26-194539_hyprshot.png)
+
+Figure 3. Control Panel - mixer, power mode, and system monitor
+
+![Wifi password dialog](./assets/showcase/2024-07-26-194436_hyprshot.png)
+
+Figure 4. Control Panel - mixer, power mode, and system monitor
+
+![Notification pop up](./assets/showcase/2024-07-26-194444_hyprshot.png)
+
+Figure 5. Notification pop up
+
+![Notification center](./assets/showcase/2024-07-26-194749_hyprshot.png)
+
+Figure 5. Notification center
 
 ![Power options panel](./assets/showcase/2024-07-26-194659_hyprshot.png)
+
+Figure 6. Power options panel
