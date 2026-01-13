@@ -1,15 +1,15 @@
-import os
-import time
-import threading
-import json
 import collections
+import json
+import os
+import threading
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
 
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
-from gi.repository import GLib # pyright: ignore
+from gi.repository import GLib  # pyright: ignore
 
 
 def main():
@@ -35,10 +35,12 @@ class Notification:
 
 filename = "/tmp/notifications.json"
 
+
 def init_notifications_file():
     if not os.path.exists(filename):
         with open(filename, "w") as f:
             json.dump([], f)
+
 
 def push_notification_to_file(notification: Notification):
     with open(filename, "r") as f:
@@ -51,13 +53,15 @@ def push_notification_to_file(notification: Notification):
 
 
 class NotificationsManager:
-    def __init__(self, max: int | None = None, timeout: float = 0.0, echo = False):
-        self.notifications: collections.deque[Notification] = collections.deque([], maxlen=max)
+    def __init__(self, max: int | None = None, timeout: float = 0.0, echo=False):
+        self.notifications: collections.deque[Notification] = collections.deque(
+            [], maxlen=max
+        )
         self.timeout = timeout
         self.echo_enabled = echo
 
     def echo(self):
-        if (self.echo_enabled):
+        if self.echo_enabled:
             print(list(self.notifications), flush=True)
 
     def push(self, notification: Notification):
@@ -85,15 +89,21 @@ notification_manager = NotificationsManager(max=5, timeout=10, echo=True)
 
 class NotificationServer(dbus.service.Object):
     def __init__(self):
-        bus_name = dbus.service.BusName("org.freedesktop.Notifications", bus=dbus.SessionBus())
+        bus_name = dbus.service.BusName(
+            "org.freedesktop.Notifications", bus=dbus.SessionBus()
+        )
         dbus.service.Object.__init__(self, bus_name, "/org/freedesktop/Notifications")
 
     @dbus.service.method("org.freedesktop.Notifications", out_signature="ssss")
     def GetServerInformation(self):
         return ("Custom Notification Server", "ExampleNS", "1.0", "1.2")
 
-    @dbus.service.method("org.freedesktop.Notifications", in_signature="susssasa{ss}i", out_signature="u")
-    def Notify(self, app_name, replaces_id, app_icon, summary, body, actions, hints, timeout):
+    @dbus.service.method(
+        "org.freedesktop.Notifications", in_signature="susssasa{ss}i", out_signature="u"
+    )
+    def Notify(
+        self, app_name, replaces_id, app_icon, summary, body, actions, hints, timeout
+    ):
         raw_timestamp = datetime.now()
         timestamp = raw_timestamp.strftime("%I:%M %p")
         id = f"id{app_name}T{raw_timestamp}"

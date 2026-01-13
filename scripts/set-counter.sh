@@ -2,13 +2,11 @@
 
 control_file="/tmp/countdown_control.txt"
 
-# Usage function
 usage() {
     echo "Usage: $0 [-H <hours>] [-M <minutes>] [-S <seconds>] [-C clear] [-T start|stop|restart] [-P focus|break|rest]"
     exit 1
 }
 
-# Parse arguments
 while getopts ":H:M:S:C:T:P:" opt; do
     case $opt in
         H) hours=$OPTARG ;;
@@ -16,7 +14,7 @@ while getopts ":H:M:S:C:T:P:" opt; do
         S) seconds=$OPTARG ;;
         C) clear=true ;;
         T) command=$OPTARG ;;
-        P) profile=$OPTARG ;;  # Added profile argument
+        P) profile=$OPTARG ;;
         *) usage ;;
     esac
 done
@@ -41,7 +39,7 @@ else
         echo "command=start" >> "$control_file"
     fi
 
-    if [ -n "$profile" ]; then  # Added profile handling
+    if [ -n "$profile" ]; then
         case $profile in
             focus)
                 sed -i "s/^hours=.*/hours=0/" "$control_file"

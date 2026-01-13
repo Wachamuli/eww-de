@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Initialize default values
 hours=0
 minutes=0
 seconds=0
-profile="none"  # Added initialization for profile
+profile="none"
 
 control_file="/tmp/countdown_control.txt"
 
@@ -15,10 +14,9 @@ if [ ! -f "$control_file" ]; then
     echo "seconds=0" >> "$control_file"
     echo "command=stop" >> "$control_file"
     echo "remaining_time=0" >> "$control_file"
-    echo "profile=none" >> "$control_file"  # Added profile initialization in control file
+    echo "profile=none" >> "$control_file"
 fi
 
-# Function to read parameters from the control file
 read_parameters() {
     while IFS='=' read -r key value; do
         case "$key" in
@@ -32,18 +30,14 @@ read_parameters() {
     done < "$control_file"
 }
 
-# Function to save remaining time to control file
 save_remaining_time() {
     echo "remaining_time=$remaining_time" >> "$control_file"
 }
 
-# Initial read of parameters
 read_parameters
 
-# Calculate total seconds
 total_seconds=$((hours * 3600 + minutes * 60 + seconds))
 
-# Countdown loop
 while true; do
     if [ "$command" = "start" ]; then
         end_time="$(($(date +%s) + remaining_time))"
@@ -55,12 +49,12 @@ while true; do
                 break
             elif [ "$command" = "clear" ]; then
                 remaining_time=0
-                echo -e "$(date -u -d "@$remaining_time" +'{"hour": "00", "minute": "00", "second": "00", "profile": "'$profile'"}')\r"  # Modified to include profile
+                echo -e "$(date -u -d "@$remaining_time" +'{"hour": "00", "minute": "00", "second": "00", "profile": "'$profile'"}')\r"
                 break
             fi
 
             remaining_time="$(( $end_time - $(date +%s) ))"
-            echo -e "$(date -u -d "@$remaining_time" +'{"hour": "%H", "minute": "%M", "second": "%S", "profile": "'$profile'"}')\r"  # Modified to include profile
+            echo -e "$(date -u -d "@$remaining_time" +'{"hour": "%H", "minute": "%M", "second": "%S", "profile": "'$profile'"}')\r"
             sleep 1
         done
 
