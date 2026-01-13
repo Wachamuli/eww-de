@@ -1,0 +1,140 @@
+(defwindow bar
+  :namespace "eww"
+  :monitor 0
+  :stacking "fg"
+  :exclusive true
+  :geometry (geometry
+    :width  "100%"
+    :height  "40px"
+    :anchor "top center"
+  )
+  (bar_widget)
+)
+
+(defwindow notifications_window
+  :namespace "eww"
+  :monitor 0
+  :geometry (geometry
+    :x "10px"
+    :y "15px"
+    :anchor "top right"
+  )
+  :stacking "overlay"
+  (notifications_widget)
+)
+
+(defwindow control_panel_window
+  :namespace "eww"
+  :monitor 0
+  :stacking "fg"
+  :geometry (
+    geometry
+    :x "10px"
+    :y "15px"
+    :width "370px"
+    :height "60px"
+    :anchor "top right"
+  )
+  (control_panel_widget)
+)
+
+(defvar password_output "Type a password")
+
+(defwindow password_window [ssid rate signal security]
+  :namespace "eww"
+  :monitor 0
+  :focusable true
+  :stacking "overlay"
+  :geometry (
+    geometry
+    :y "15px"
+    :width "520px"
+    :height "60px"
+    :anchor "center"
+  )
+  (box
+    :orientation "v"
+    :class "controls-menu"
+    (header :title "WI-FI" :path "wififull.svg")
+    
+    (v_separator)
+    
+    (box
+      (label :class "text-bold" :halign "start" :text "SSID: ")
+      (label :halign "end" :text "${ssid}")
+    )
+    (box
+      (label :class "text-bold" :halign "start" :text "Rate:")
+      (label :halign "end" :text "${rate}")
+    )
+    (box
+      (label :class "text-bold" :halign "start" :text "Signal: ")
+      (label :halign "end" :text "${signal}%")
+    )
+    (box
+      (label :class "text-bold" :halign "start" :text "Security: ")
+      (label :halign "end" :text "${security}")
+    )
+    
+    (v_separator)
+    
+    (input
+      :password true
+      :onaccept "./scripts/bar/wifi_set_connection.sh ${ssid} {}"
+    )
+    
+    (label :text password_output)
+    
+    (v_separator)
+    
+    (pressable
+      :onclick "eww close password_window"
+      (label :class "text-underline" :halign "center" :text "Back")
+    )
+  )
+)
+
+(defwindow notification_center_window
+  :namespace "eww"
+  :monitor 0
+  :stacking "fg"
+  :geometry (
+    geometry
+    :x "10px"
+    :y "15px"
+    :width "370px"
+    :height "60px"
+    :anchor "top right"
+  )
+  (notification_center)
+)
+
+(defwindow power_menu_window
+  :namespace "eww"
+  :monitor 0
+  :stacking "fg"
+  :geometry (
+    geometry
+    :x "10px"
+    :y "15px"
+    :width "370px"
+    :height "60px"
+    :anchor "top left"
+  )
+  (power_menu_widget)
+)
+
+(defwindow calendar_window []
+  :namespace "eww"
+  :monitor 0
+  :stacking "fg"
+  :geometry (
+    geometry
+    :x "10px"
+    :y "15px"
+    :width "270px"
+    :height "60px"
+    :anchor "top right"
+  )
+  (calendar_widget)
+)

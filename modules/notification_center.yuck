@@ -1,0 +1,58 @@
+(defwidget notification_center []
+  (box
+    :orientation "v"
+    :space-evenly false
+    (box
+      :class "notification-header"
+      (box
+        :orientation "h"
+        :space-evenly true
+        :halign "start"
+        (header :title "Notifications ${arraylength(static_notifications) > 0 ? "(${arraylength(static_notifications)})" : ""}" :path "bell.svg")
+      )
+
+      (box
+        :spacing 10
+        :space-evenly false
+        :halign "end"
+        (button
+          :onclick ""
+          (box
+            :style "background-color: #ffffff; border-radius: 30px; padding: 10px;"
+            (icon :tooltip "Do not disturb" :path "do_not_disturb.svg")
+          )
+        )
+
+        (button
+          :onclick ""
+          (box
+            :style "background-color: #ffffff; border-radius: 30px; padding: 10px;"
+            (icon :tooltip "Clear all" :path "trash_can.svg")
+          )
+        )
+      )
+    )
+
+    (v_separator)
+
+    (scroll
+      :vscroll true
+      :height 750
+      :width 500
+      (box
+        :orientation "v"
+        :spacing 20
+        :space-evenly false
+        (for notification in static_notifications
+          (notification
+            :timestamp {notification.timestamp}
+            :icon {notification.app_icon}
+            :name {notification.app_name}
+            :summary {notification.summary}
+            :body {notification.body}
+          )
+        )
+      )
+    )
+  )
+)

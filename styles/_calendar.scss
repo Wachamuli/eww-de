@@ -1,0 +1,29 @@
+@import "theme";
+
+.calendar-container {
+  padding: 2rem;
+  background: $primary;
+  border: $outline-width solid $secondary;
+  border-radius: $radius-lg;
+
+  .day-name-number {
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .month-year {
+    font-size: 20px;
+  }
+}
+
+calendar {
+  padding: 5px;
+  font-size: 19px;
+  font-weight: 500;
+
+  &:selected {
+    color: $primary;
+    background-color: $secondary;
+    border-radius: $radius-sm;
+  }
+}

@@ -1,0 +1,93 @@
+@import "./styles/theme.scss";
+
+@import "./styles/gtk";
+@import "./styles/bar";
+@import "./styles/control_panel";
+@import "./styles/power_menu";
+@import "./styles/calendar";
+@import "./styles/notification";
+
+.selected {
+    font-weight: $font-bold;
+    background-color: $secondary;
+    color: $primary;
+    border-radius: $radius-lg;
+    padding: 5px 20px 5px 20px
+}
+
+.header {
+    font-weight: $font-bold;
+    font-size: 20px;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.text-bold {
+    font-weight: $font-bold;
+}
+
+.pressable {
+    &:hover {
+        transition: $transition-time;
+        border-radius: $radius-lg;
+        background-color: $light-accent;
+    }
+    .inner-pressable {
+        padding: 0px 10px 0px 10px;
+    }
+}
+.pressable-background {
+    border-radius: $radius-lg;
+    background-color: $light-accent;
+}
+
+.circular-button,
+.squared-button,
+.rectangular-button {
+    background-color: $primary;
+    border: 2px solid $secondary;
+
+    &:hover {
+        background-color: $light-accent;
+        transition: $transition-time;
+    }
+}
+
+.circular-button {
+    border-radius: 30px;
+}
+
+.squared-button,
+.rectangular-button {
+    border-radius: $radius-sm;
+}
+
+.circular-button-alt,
+.squared-button-alt,
+.rectangular-button-alt {
+    background-color: $secondary;
+    // border-radius: 30px;
+    border: 2px solid $secondary;
+
+    &:hover {
+        background-color: $dark-accent;
+        border-color: $dark-accent;
+        transition: $transition-time;
+    }
+}
+
+.circular-button-alt {
+    border-radius: 30px;
+}
+.squared-button-alt,
+.rectangular-button-alt {
+    border-radius: $radius-sm;
+}
+
+.rectangular-button-alt {
+    label {
+        color: $primary;
+    }
+}

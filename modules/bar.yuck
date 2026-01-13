@@ -1,0 +1,243 @@
+(defwidget bar_widget []
+  (box
+    :class "bar-container"
+    :orientation "h"
+    :space-evenly true
+    (bar_section :position "start"
+      (pressable
+        :keep_active is_power_menu_open
+        :onclick {toggle_win + "power_menu_window" + " && " + assign_var + "is_power_menu_open=${!is_power_menu_open}"}
+        (icon :path "fedora.svg")
+      )
+
+      (h_separator)
+
+      (pressable
+        :onclick "firefox"
+        (icon :path "firefox.svg")
+      )
+      (pressable
+        :onclick "code"
+        (icon :path "vscode.svg")
+      )
+      (pressable
+        :onclick "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@"
+        (icon :path "obsidian.svg")
+      )
+    )
+    (bar_section :position "center"
+      (pressable
+        ; TODO: Implement Hyprexpo
+        :onclick ""
+        (workspaces_widget)
+      )
+    )
+    (bar_section :position "end"
+
+    (h_separator)
+
+      (timer_display)
+
+      (h_separator :visible is_systrays_open)
+
+      (revealer
+        :reveal is_systrays_open
+        :transition "slideleft"
+        :duration "200ms"
+        (systray
+          :style "margin-right: 10px"
+          :spacing 20
+          :icon-size 22
+        )
+      )
+
+      ; (pressable
+      ;   :onclick {assign_var + "is_systrays_open=${!is_systrays_open}"}
+      ;   (icon
+      ;     :path {is_systrays_open ? "chevron-left.svg" :  "chevron-down.svg" }
+      ;   )
+      ; )
+
+      ; (pressable
+      ;   :onclick "hyprctl switchxkblayout at-translated-set-2-keyboard next"
+      ;   (keyboard_layout_widget)
+      ; )
+
+      ; (pressable
+      ;   :onclick ""
+      ;   (icon
+      ;     :path "window.svg"
+      ;   )
+      ; )
+
+      (h_separator)
+
+      (pressable
+        :spacing 5
+        :onclick {toggle_win + "control_panel_window" + " && " + assign_var + "is_control_center_open=${!is_control_center_open}"}
+        :keep_active is_control_center_open
+        (location_icon)
+        (bluetooth_icon)
+        (mic_icon)
+        (wifi_icon)
+        (sound_icon)
+        (battery_icon)
+      )
+
+      (h_separator)
+
+      (pressable
+        :onclick {toggle_win + "calendar_window" + " && " + assign_var + "is_calendar_open=${!is_calendar_open}"}
+        :keep_active is_calendar_open
+        (smalldate_widget)
+      )
+
+      (h_separator)
+
+      (pressable
+        :onclick {toggle_win + "notification_center_window" + " && " + assign_var + "is_notifications_center_open=${!is_notifications_center_open}"}
+        :keep_active is_notifications_center_open
+        (bell_icon)
+      )
+    )
+  )
+)
+
+(defwidget bar_section [position]
+  (box
+    :class "bar-section-container"
+    :halign position
+    :space-evenly false
+    (children)
+  )
+)
+
+(defwidget keyboard_layout_widget []
+  (label
+    :style "font-weight: 600; font-size: 14px;"
+    :text {keyboard_layout.abbreviated_active_keymap}
+  )
+)
+
+(defwidget timer_display []
+    (box
+        :visible {(timer.second > 0 || timer.minute > 0) && (!is_control_center_open || !is_timer_open)}
+        :space-evenly false
+        (box
+            :space-evenly false
+            :style "background-color: white; border-radius: 30px; padding: 0px 10px 0px 10px;"
+            :spacing 5
+            (icon :path "clock.svg")
+            (box
+                :space-evenly false
+                (label :class "text-bold" :style "color: black" :text {timer.minute + ":"})
+                (label :class "text-bold" :style "color: black" :text {timer.second})
+            )
+        )
+
+        (h_separator)
+    )
+)
+
+
+(defwidget workspaces_widget []
+  (box
+    :spacing 1
+    (for workspace in {workspaces.actives}
+      (icon
+        :path {
+        workspace == workspaces.focused
+        ? "workspace-active.svg" :
+        workspace > arraylength(workspaces.actives) - 1
+        ? "workspace-create.svg"
+        : "workspace-inactive.svg"
+        }
+      )
+    )
+  )
+)
+
+(defwidget smalldate_widget []
+  (label :class "text-bold" :text today)
+)
+
+(defwidget bluetooth_icon []
+  (icon
+    :visible {bluetooth.state == "no"}
+    :path "bluetooth-on.svg"
+  )
+)
+
+(defwidget location_icon []
+  (icon
+    :visible {location.state == "active"}
+    :path "location-on.svg"
+  )
+)
+
+(defwidget battery_icon [?width ?height]
+  (
+    icon
+    :width width
+    :height height
+    :visible {EWW_BATTERY == "" ? false : true}
+    :tooltip "Battery ${battery.percentage}%"
+    :path {
+    battery.state == "discharging"
+    ? "battery-${battery.percentage_base10}.svg"
+    : "battery-charging-${battery.percentage_base10}.svg"
+    }
+  )
+)
+
+(defwidget wifi_icon []
+  (icon
+    :tooltip "Connected to ${wifi.name}"
+    :path {
+    wifi.state == "yes" ?
+    wifi.signal > 68
+    ? "wififull.svg"
+    : wifi.signal > 34 ? "wifihalf.svg"
+    : "wifimin.svg"
+    : "wifidisconnected.svg"
+    }
+  )
+)
+
+(defwidget mic_icon []
+    (icon
+        :visible {microphone.state == "on"}
+        :path "mic-on.svg"
+    )
+)
+
+(defwidget sound_icon [?width ?height]
+  (icon
+    :width width
+    :height height
+    :tooltip {sound.muted == "no" ? "Volume " + sound.volume + "%" : "Muted"}
+    :path {
+    "${sound.muted}" == "no"
+    ? sound.volume > 65 ? "volume-up.svg"
+    : sound.volume > 30 ? "volume-middle.svg"
+    : "volume-down.svg"
+    : "volume-mute.svg"
+    }
+  )
+)
+
+
+(defwidget bell_icon []
+  (icon
+    :tooltip "Notifications"
+    :path "bell.svg"
+  )
+)
+
+(defwidget brightness_icon [?width ?height]
+  (icon
+    :width width
+    :height height
+    :path "brightness.svg"
+  )
+)

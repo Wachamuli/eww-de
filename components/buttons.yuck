@@ -1,0 +1,99 @@
+(defwidget pressable [?onclick ?onhover ?onhoverlost ?spacing ?keep_active]
+  (eventbox
+    :class {"pressable" + " " + ((keep_active ?: false) ? "pressable-background" : "")}
+    :onclick onclick
+    :onhover onhover
+    :onhoverlost onhoverlost
+    (box
+      :class "inner-pressable"
+      :spacing {spacing ?: 0}
+      (children)
+    )
+  )
+)
+
+(defwidget custom_button [class width height variable ?onclick ?onrightclick ?tooltip ?path ?alt_path ?alt_class]
+  (button
+    :class { (variable ?: false) ? alt_class : class}
+    :width width
+    :height height
+    :onclick onclick
+    :onrightclick onrightclick
+    (icon
+      :tooltip tooltip
+      :width 25
+      :height 25
+      :path { (variable ?: false) ? alt_path : path }
+    )
+  )
+)
+
+; TODO: I should replace the every squared_button with new_squared_button
+(defwidget new_squared_button [?variable ?onclick ?path ?alt_path ?tooltip]
+  (custom_button
+    :class "squared-button"
+    :alt_class "squared-button-alt"
+    :width 60
+    :height 60
+    :variable variable
+    :onclick onclick
+    :tooltip tooltip
+    :path path
+    :alt_path alt_path
+  )
+)
+
+(defwidget circular_button [?variable ?onclick ?path ?alt_path ?tooltip ?onrightclick]
+  (custom_button
+    :class "circular-button"
+    :alt_class "circular-button-alt"
+    :width 60
+    :height 60
+    :variable variable
+    :onclick onclick
+    :onrightclick onrightclick
+    :tooltip tooltip
+    :path path
+    :alt_path alt_path
+  )
+)
+
+(defwidget squared_button [?onclick ?path ?tooltip]
+  (button
+    :class "squared-button"
+    :width 60
+    :height 60
+    :onclick onclick
+    (icon
+      :tooltip tooltip
+      :width 25
+      :height 25
+      :path path
+    )
+  )
+)
+
+(defwidget rectangular_button [?variable ?alt_path ?path ?header ?subheader ?onclick]
+  (button
+    :class { variable ? "rectangular-button-alt" : "rectangular-button"}
+    :onclick onclick
+    (box
+      :space-evenly false
+      (box
+        :width 60
+        (icon
+          :width 25
+          :height 25
+          :path { variable ? alt_path : path }
+        )
+      )
+      (box
+        :orientation "v"
+        :space-evenly false
+        :valign "center"
+        (label :class "text-bold" :halign "start" :text header)
+        (label :halign "start" :text subheader)
+      )
+    )
+  )
+)

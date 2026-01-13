@@ -1,0 +1,27 @@
+@import "theme";
+
+.controls-menu {
+  background-color: $primary;
+  border: $outline-width solid $secondary;
+  border-radius: $radius-lg;
+  padding: 2rem;
+}
+
+.option {
+  padding: 10px 10px 10px 10px;
+  font-weight: 500;
+
+  &:hover {
+    transition: $transition-time;
+    border-radius: $radius-lg;
+    background-color: $light-accent;
+  }
+}
+
+.option-selected {
+  font-weight: 500;
+  padding: 10px 10px 10px 10px;
+  transition: $transition-time;
+  border-radius: $radius-lg;
+  background-color: $light-accent;
+}

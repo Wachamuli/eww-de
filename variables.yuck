@@ -1,0 +1,110 @@
+; Bar
+(defvar is_power_menu_open false)
+(defvar is_calendar_open false)
+(defvar is_control_center_open false)
+(defvar is_notifications_center_open false)
+(defvar is_systrays_open false)
+
+
+; Control Center
+(defvar is_wifi_networks_open false)
+(defvar is_mixer_open false)
+(defvar is_power_open false)
+(defvar is_system_monitor_open false)
+(defvar is_power_mode_open false)
+(defvar is_timer_open false)
+
+; Others
+(defvar empty_array "[{}]")
+(defvar transition_speed "200ms")
+(defvar images_folder "./assets/icons/")
+(defvar assign_var "~/.local/bin/eww --config ~/.config/eww update ")
+(defvar toggle_win "~/.local/bin/eww --config ~/.config/eww open --toggle ")
+
+; Poll variables
+(defpoll today
+  :interval "1s"
+  `date +"%a %d %I:%M %p"`
+)
+(defpoll time
+  :initial `{"day":"1", "month":"1", "year": "1"}`
+  :interval  "1h"
+  `date +'{"day":"%d", "month":"%m", "year":"%Y", "full_day_name":"%A", "full_month_name":"%B"}'`
+)
+(defpoll workspaces
+  :initial `{ "focused": 1, "actives": "[1]"}`
+  :interval "0.2s"
+  "./scripts/workspaces.sh"
+)
+(defpoll keyboard_layout
+  :initial `{ "keymaps": "[]", "active_keymap": "", "abbreviated_active_keymap": ""}`
+  :interval "1s"
+  "./scripts/keyboard_layout.sh"
+)
+(defpoll battery
+  :initial `{"state": "", "percentage": 0, "percentage_base10": 0, "time_to_full": 0, "time_to_empty": 0}`
+  :interval "1s"
+  "./scripts/battery.sh"
+)
+(defpoll microphone
+  :initial `{"state": "off"}`
+  :interval "1s"
+  "./scripts/microphone.sh"
+)
+(defpoll wifi
+  :initial `{"state": "no", "name": "", "signal": 0}`
+  :interval "1s"
+  "./scripts/wifi.sh"
+)
+(defpoll wifi_scan
+  :initial "[{}]"
+  :interval "5s"
+  "./scripts/wifi_scan.sh"
+)
+(defpoll location
+  :initial `{"state": "inactive"}`
+  :interval  "5s"
+  "./scripts/location.sh"
+)
+(defpoll bluetooth
+  :initial `{"state": "yes"}`
+  :interval  "0.5s"
+  "./scripts/bluetooth.sh"
+)
+(defpoll airplane_mode
+  :initial `false`
+  :interval  "0.5s"
+  "./scripts/airplanemode.sh"
+)
+(defpoll audio_sinks
+  :initial "[{}]"
+  :interval "2s"
+  "./scripts/mixer.sh"
+)
+(defpoll power_mode
+  :interval "0.2s"
+  :initial "Balanced"
+  "./scripts/power_mode.sh get"
+)
+(defpoll static_notifications
+  :interval "1s"
+  `cat /tmp/notifications.json`
+)
+
+; Listen variables
+(deflisten notifications
+  :initial "[{}]"
+  "python3 ./scripts/notifications.py"
+)
+(deflisten sound
+  :initial `{ "volume": 100, "muted": "no"}`
+  "./scripts/sound.sh "
+)
+(deflisten brightness
+  :initial 1000
+  "./scripts/brightness.sh "
+)
+(deflisten timer
+  :initial `{ "hour": "00", "minute": "00", "second": "00"}`
+  "./scripts/get-counter.sh"
+)

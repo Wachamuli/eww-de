@@ -1,0 +1,422 @@
+(defwidget control_panel_widget []
+  (box
+    :class "controls-menu"
+    :orientation "v"
+    :space-evenly false
+    (box
+      (battery_info)
+      (box
+        :space-evenly false
+        :spacing 10
+        :halign "end"
+        (wifi)
+        (bluetooth)
+        (plane_mode)
+      )
+    )
+    (v_separator)
+    (box
+      :orientation "v"
+      :space-evenly false
+      :spacing 10
+      (slider
+        :max 101
+        :min 0
+        :value {sound.volume}
+        :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+        (sound_icon :width 25 :height 25)
+      )
+      (box
+        (slider
+          :max 100
+          :min 1
+          :value brightness
+          :onchange "brightnessctl --quiet set {}%"
+          (brightness_icon :width 25 :height 25)
+        )
+      )
+    )
+    (v_separator)
+    (box
+      :space-evenly false
+      :spacing 10
+      (box
+        :orientation "v"
+        :hexpand true
+        :spacing 10
+        (rectangular_button
+          :variable is_power_mode_open
+          :onclick {assign_var + "is_power_mode_open=${!is_power_mode_open}"}
+          :header "Power Mode"
+          :subheader power_mode
+          :path "power_mode.svg"
+          :alt_path "power_mode_alt.svg"
+        )
+        (rectangular_button
+          :variable false
+          :onclick ""
+          :header "Fan Profile"
+          :subheader "Silent"
+          :path "fan.svg"
+          :alt_path "fan-alt.svg"
+        )
+      )
+
+      (box
+        :spacing 10
+        :orientation "v"
+        :halign "end"
+        (box
+          :spacing 10
+          (new_squared_button
+            :variable is_system_monitor_open
+            :onclick {assign_var + "is_system_monitor_open=${!is_system_monitor_open}"}
+            :tooltip "System Monitor"
+            :path "system_monitor.svg"
+            :alt_path "system_monitor_alt.svg"
+          )
+          (new_squared_button
+            :variable is_timer_open
+            :onclick {assign_var + "is_timer_open=${!is_timer_open}"}
+            :tooltip "Timer"
+            :path "clock-alt.svg"
+            :alt_path "clock.svg"
+          )
+        )
+        (box
+          :spacing 10
+          (new_squared_button
+            :variable is_mixer_open
+            :onclick {assign_var + "is_mixer_open=${!is_mixer_open}"}
+            :tooltip "Mixer"
+            :path "mixer.svg"
+            :alt_path "mixer-alt.svg"
+          )
+          (squared_button
+            :tooltip "Screenshot"
+            :path "screenshot.svg"
+          )
+        )
+      )
+    )
+
+    (revealer
+      :reveal is_wifi_networks_open
+      :transition "slidedown"
+      :duration transition_speed
+      (box
+        :orientation "v"
+        :space-evenly false
+        (wifi_networks)
+        (v_separator :half true)
+        (box
+          :halign "end"
+          (pressable
+            :onclick ""
+            (label :text "All Networks")
+          )
+        )
+      )
+    )
+
+    (revealer
+      :reveal is_mixer_open
+      :transition "slidedown"
+      :duration transition_speed
+      (box
+        :orientation "v"
+        :space-evenly false
+        (mixer)
+        (v_separator :half true)
+      )
+    )
+
+    (revealer
+      :reveal is_power_mode_open
+      :transition "slidedown"
+      :duration transition_speed
+      (power_mode_options)
+    )
+
+    (revealer
+      :reveal is_system_monitor_open
+      :transition "slidedown"
+      :duration transition_speed
+      (system_monitor)
+    )
+
+    (revealer
+      :reveal is_timer_open
+      :transition "slidedown"
+      :duration transition_speed
+      (timer)
+    )
+  )
+)
+
+(defwidget brightness_icon [?width ?height]
+  (icon
+    :width width
+    :height height
+    :path "brightness.svg"
+  )
+)
+
+(defwidget power_mode_options []
+  (box
+    :orientation "v"
+    :space-evenly false
+    (v_separator :draw-line true)
+    (header :title "Power Mode" :path "power_mode.svg")
+    (v_separator)
+
+    (option
+      :onclick "powerprofilesctl set power-saver"
+      :selected {power_mode == "Power Saver"}
+      :text "Power saver"
+    )
+    (option
+      :onclick "powerprofilesctl set balanced"
+      :selected {power_mode == "Balanced"}
+      :text "Balanced"
+    )
+    (option
+      :onclick "powerprofilesctl set performance"
+      :selected {power_mode == "Performance"}
+      :text "Balanced"
+      :text "Performance"
+    )
+  )
+)
+
+(defwidget timer []
+    (box
+        :orientation "v"
+        :space-evenly false
+        (v_separator :draw-line true)
+        (header :path "clock-alt.svg" :title "Timer")
+        (v_separator :half true)
+
+        (box
+            :space-evenly false
+            :spacing 40
+            :halign "center"
+            (box
+                :orientation "v"
+                :space-evenly false
+                :valign "center"
+                (box
+                    :space-evenly false
+                    :halign "center"
+                    ; (label :class "text-bold" :text "${timer.hour} : " :style "font-size: 56px")
+                    (label :class "text-bold" :text "${timer.minute} : " :style "font-size: 56px")
+                    (label :class "text-bold" :text {timer.second} :style "font-size: 56px")
+                )
+
+                (v_separator :half true)
+
+                (box
+                    :space-evenly false
+                    :halign "center"
+                    (pressable
+                        :onclick "./scripts/set-counter.sh -T clear"
+                        (icon
+                            :width 25
+                            :height 25
+                            :path "restart.svg"
+                        )
+
+                    )
+                    (pressable
+                        :onclick "./scripts/set-counter.sh -T stop"
+                        (icon
+                            :width 25
+                            :height 25
+                            :path "stop.svg"
+                        )
+                    )
+                    (pressable
+                        :onclick "./scripts/set-counter.sh -T start"
+                        (icon
+                            :width 25
+                            :height 25
+                            :path "play.svg"
+                        )
+                    )
+                )
+            )
+
+            (box
+                :orientation "v"
+                :halign "end"
+                :spacing 20
+                (pressable :onclick "./scripts/set-counter.sh -P focus"
+                    (selectable :selected {timer.profile == "focus"} :text "Focus")
+                )
+                (pressable :onclick "./scripts/set-counter.sh -P break"
+                    (selectable :selected {timer.profile == "break"} :text "Break")
+                )
+                (pressable :onclick "./scripts/set-counter.sh -P rest"
+                    (selectable :selected {timer.profile == "rest"} :text "Rest")
+                )
+            )
+        )
+    )
+)
+
+(defwidget selectable [text ?selected]
+    (label :class {(selected ?: false) ? "selected" : "" } :text text)
+)
+
+(defwidget wifi_networks []
+  (box
+    :space-evenly false
+    :orientation "v"
+    (v_separator :draw-line true)
+    (header :path "wififull.svg" :title "WI-FI")
+    (v_separator)
+
+    (scroll
+        :height 500
+        :space-evenly false
+        (for network in wifi_scan
+            (option
+                :selected {network.ssid == wifi.name}
+                :onclick {
+                toggle_win + "password_window --arg ssid='${network.ssid}' --arg rate='${network.rate}' --arg signal='${network.signal}' --arg security='${network.security}'"
+                + " && "
+                + assign_var + "password_output='Type a password'"
+                }
+                :text {network.ssid}
+                (box
+                :halign "end"
+                :hexpand true
+                (icon
+                    :width 25
+                    :height 25
+                    :tooltip {"Signal ${network.signal}%"}
+                    :path {
+                    network.signal > 68
+                    ? "signal-full.svg"
+                    : (network.signal ?: 0) > 34
+                    ? "signal-mid.svg"
+                    : "signal-low.svg"
+                    }
+                )
+                )
+            )
+        )
+    )
+  )
+)
+
+(defwidget battery_info []
+  (box
+    :space-evenly false
+    :valign "center"
+    :spacing 10
+    (battery_icon
+      :width 25
+      :height 25
+    )
+    (box
+      :orientation "v"
+      :space-evenly false
+      :valign "center"
+      (label
+        :halign "start"
+        :class "text-bold"
+        :text {battery.percentage + "%"}
+      )
+      (label
+        :halign "start"
+        :text {battery.state == "charging" ? battery.time_to_full : battery.time_to_empty}
+      )
+    )
+  )
+)
+
+(defwidget bluetooth []
+  (circular_button
+    :variable {bluetooth.state == "on"}
+    :onclick "if bluetoothctl show | grep -q 'Powered: yes'; then echo 'power off' | bluetoothctl; else echo 'power on' | bluetoothctl; fi"
+    :path "bluetooth-on.svg"
+    :alt_path "bluetooth-on-alt.svg"
+  )
+)
+
+(defwidget wifi []
+  (circular_button
+    :variable {wifi.state == "yes"}
+    :onclick "if [ \"$(nmcli radio wifi)\" = \"enabled\" ]; then nmcli radio wifi off; else nmcli radio wifi on; fi"
+    :onrightclick "${EWW_EXECUTABLE} update is_wifi_networks_open=${!is_wifi_networks_open}"
+    :path "wififull.svg"
+    :alt_path "wififull-alt.svg"
+  )
+)
+
+(defwidget plane_mode []
+  (circular_button
+    :onclick "rfkill list all | grep -qi \"Soft blocked: yes\" && rfkill unblock all || rfkill block all"
+    :variable airplane_mode
+    :alt_path "airplane-on.svg"
+    :path "airplane-on-alt.svg"
+  )
+)
+
+; It's a little buggy beacause the mixer script is called every 2s. But it's ok.
+(defwidget mixer []
+  (box
+    :orientation "v"
+    :spacing 10
+    :space-evenly false
+    (v_separator :draw-line true)
+    (header :title "Mixer" :path "mixer.svg")
+
+    (v_separator :half true)
+
+    (label :visible {arraylength(audio_sinks) < 1} :text "No audio sources available")
+
+    (for sink in audio_sinks
+      (slider
+        :max 100
+        :min 0
+        :value {(( sink.volume_left ?: 1 ) * 100) / 64880}
+        :onchange "pactl set-sink-input-volume ${sink.sink_id} {}%"
+        (label :xalign 0 :width 90 :truncate true :valign "center" :style "font-weight: bold" :text {sink.app_name})
+      )
+    )
+  )
+)
+
+(defwidget system_monitor []
+  (box
+    :orientation "v"
+    :space-evenly false
+    (v_separator :draw-line true)
+    (header :title "System Monitor" :path "system_monitor.svg")
+    (v_separator)
+    (box
+      (circular_indicator
+        :label "CPU"
+        :tooltip "CPU"
+        :path "cpu.svg"
+        :value {round(EWW_CPU.avg, 2)}
+      )
+      (circular_indicator
+        :label "RAM"
+        :tooltip "RAM"
+        :path "ram.svg"
+        :value {round((EWW_RAM.used_mem * 100) / EWW_RAM.total_mem, 2)}
+      )
+      (circular_indicator
+        :label "TMP"
+        :tooltip "Temperature"
+        :path "temperature.svg"
+        :value {EWW_TEMPS.CORETEMP_PACKAGE_ID_0}
+      )
+    )
+
+    (v_separator :half true)
+  )
+)

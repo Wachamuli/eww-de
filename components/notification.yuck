@@ -1,0 +1,25 @@
+(defwidget notification [timestamp ?icon ?name ?summary ?body]
+  (box
+    :class "notification-container"
+    :width 500
+    :spacing 20
+    :space-evenly false
+    (image
+      :image-width 60
+      :image-height 60
+      :path {icon ?: images_folder + "bell.svg"}
+    )
+    (box
+      :orientation "v"
+      :space-evenly false
+      :valign "center"
+      :hexpand true
+      (box
+        (label :halign "start" :class "app-name" :limit-width 100 :text {name ?: "System"})
+        (label :halign "end" :text {timestamp})
+      )
+      (label :halign "start" :class "summary" :truncate true :text {summary ?: "Incoming Message"})
+      (label :halign "start" :truncate true :wrap true :markup {body ?: ""})
+    )
+  )
+)
